@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1 { text-align: center; }
+        form { display: flex; justify-content: center; margin-bottom: 20px; }
+        input[type="text"] { width: 70%; padding: 10px; }
+        input[type="submit"] { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        .result { margin-bottom: 20px; }
+        .result a { color: #1a0dab; text-decoration: none; font-size: 18px; }
+        .result a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Search Results</h1>
+    <form action="/search" method="post">
+        <input type="text" name="query" value="{{ query }}" required>
+        <input type="submit" value="Search">
+    </form>
+    {% if results %}
+        {% for result in results %}
+            <div class="result">
+                <a href="{{ result }}">{{ result }}</a>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+    <p><a href="/">Back to Home</a></p>
+</body>
+</html>

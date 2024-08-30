@@ -1,95 +1,48 @@
-from collections import defaultdict
-from urllib.parse import urljoin
+from fastapi import FastAPI
+from fastapi.templating import Jinja2Templates
 
-import requests
-from bs4 import BeautifulSoup
+from . import api, web
+from .crawler import Crawler
+from .indexer import Indexer
+from .searcher import Searcher
 
 
 class SearchEngine:
     def __init__(self):
-        self.pages = {}
-        self.index = defaultdict(list)
+        self.crawler = Crawler()
+        self.indexer = Indexer()
+        self.searcher = None
 
-    def crawl(self, start_url, max_pages=10):
-        print(f"Crawling {start_url}...")
-        self._crawl_recursive(start_url, max_pages)
-        print(f"Crawled {len(self.pages)} pages.")
-
-    def _crawl_recursive(self, url, max_pages):
-        if len(self.pages) >= max_pages or url in self.pages:
-            return
-
-        try:
-            response = requests.get(url)
-            if response.status_code == 200:
-                soup = BeautifulSoup(response.text, "html.parser")
-                self.pages[url] = {
-                    "title": soup.title.string if soup.title else "",
-                    "content": soup.get_text(),
-                }
-
-                print(f"Crawled {url}")
-
-                for link in soup.find_all("a"):
-                    next_url = urljoin(url, link.get("href"))
-                    self._crawl_recursive(next_url, max_pages)
-
-        except Exception as e:
-            print(f"Error crawling {url}: {e}")
-
-    def create_index(self):
-        print("Creating index...")
-        for url, page_data in self.pages.items():
-            words = page_data["content"].lower().split()
-            for word in words:
-                if url not in self.index[word]:
-                    self.index[word].append(url)
-        print("Index created.")
+    def crawl_and_index(self, start_url, max_pages=10):
+        pages = self.crawler.crawl(start_url, max_pages)
+        index = self.indexer.create_index(pages)
+        self.searcher = Searcher(index)
 
     def search(self, query):
-        words = query.lower().split()
-        if not words:
-            return []
-        results = set(self.index[words[0]])
-        for word in words[1:]:
-            results.intersection_update(set(self.index[word]))
-        return list(results)
+        if self.searcher is None:
+            raise Exception("Search engine hasn't crawled any pages yet.")
+        return self.searcher.search(query)
 
 
-def main():
-    engine = SearchEngine()
+def create_app():
+    app = FastAPI(title="Search Engine")
 
-    # Crawl a website
-    start_url = "http://example.com"
-    engine.crawl(start_url, max_pages=10)
+    # Create SearchEngine instance
+    search_engine = SearchEngine()
+    search_engine.crawl_and_index("https://fastapi.tiangolo.com/", 10)
 
-    # Create an index
-    engine.create_index()
+    # Setup Jinja2 templates
+    templates = Jinja2Templates(directory="search-engine/templates")
 
-    # Search loop
-    while True:
-        query = input("Enter your search query (or 'quit' to exit): ").strip()
+    # Include API and web routes
+    app.include_router(api.router)
+    app.include_router(web.router)
 
-        if query.lower() == "quit":
-            print("Thank you for using Simple Search Engine. Goodbye!")
-            break
+    # Add SearchEngine and templates to app state
+    app.state.search_engine = search_engine
+    app.state.templates = templates
 
-        if not query:
-            print("Please enter a valid search query.")
-            continue
-
-        print(f"\nSearching for: '{query}'")
-        results = engine.search(query)
-
-        if results:
-            print("\nSearch Results:")
-            for i, url in enumerate(results, 1):
-                print(f"{i}. {url}")
-        else:
-            print("No results found.")
-
-        print()  # Empty line for readability
+    return app
 
 
-if __name__ == "__main__":
-    main()
+app = create_app()
