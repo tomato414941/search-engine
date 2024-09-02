@@ -1,14 +1,17 @@
+from .preprocessor import preprocessor
+
+
 class Searcher:
     def __init__(self, index, page_data):
         self.index = index
         self.page_data = page_data
 
     def search(self, query):
-        words = query.lower().split()
-        if not words:
+        processed_query = preprocessor.preprocess(query)
+        if not processed_query:
             return []
-        result_urls = set(self.index[words[0]])
-        for word in words[1:]:
+        result_urls = set(self.index[processed_query[0]])
+        for word in processed_query[1:]:
             result_urls.intersection_update(set(self.index[word]))
 
         results = []

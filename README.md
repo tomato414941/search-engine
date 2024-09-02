@@ -20,6 +20,8 @@ search-engine/
     ├── crawler.py          # Web crawler implementation
     ├── indexer.py          # Indexing functionality
     ├── searcher.py         # Search functionality
+    ├── preprocessor.py     # Text preprocessing functionality
+    ├── download_nltk_data.py # Script to download required NLTK data
     │
     └── templates/          # HTML templates
         ├── index.html      # Search page
@@ -35,6 +37,8 @@ search-engine/
 - On Windows: `.venv\Scripts\activate`
 - On macOS and Linux: `source .venv/bin/activate`
 4. Install dependencies: `pip install -r requirements.txt`
+5. Download required NLTK data: `python search-engine/download_nltk_data.py`
+
 
 ## Usage
 
@@ -51,19 +55,19 @@ uvicorn search-engine.main:app --reload
 ## Features
 
 - Web crawling with basic HTML parsing
-- Simple indexing of crawled pages
+- Indexing of crawled pages with advanced text preprocessing
 - Search functionality based on the created index
 - Web interface for easy searching
 - API endpoints for crawling and searching
 - Basic snippet generation for search results
 - Display of title, URL, snippet, and last crawled date in search results
+- Text preprocessing including tokenization, stop word removal, and stemming
 
 
 ## Future Plans
 
 - Implement respect for robots.txt files in the crawler
 - Add support for different content types (e.g., PDFs)
-- Enhance the indexing process with text preprocessing (stemming or lemmatization)
 - Implement a more sophisticated ranking algorithm
 - Add support for phrase searches and boolean operators
 - Implement pagination for search results

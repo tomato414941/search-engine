@@ -1,5 +1,7 @@
 from collections import defaultdict
 
+from .preprocessor import preprocessor
+
 
 class Indexer:
     def __init__(self):
@@ -9,7 +11,7 @@ class Indexer:
     def create_index(self, pages):
         print("Creating index...")
         for url, page_info in pages.items():
-            words = page_info["content"].lower().split()
+            words = preprocessor.preprocess(page_info["content"])
             for word in words:
                 if url not in self.index[word]:
                     self.index[word].append(url)

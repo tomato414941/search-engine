@@ -3,6 +3,7 @@ from fastapi.templating import Jinja2Templates
 
 from . import api, web
 from .crawler import Crawler
+from .download_nltk_data import download_nltk_data
 from .indexer import Indexer
 from .searcher import Searcher
 
@@ -25,11 +26,13 @@ class SearchEngine:
 
 
 def create_app():
+    # Ensure NLTK data is downloaded
+    download_nltk_data()
+
     app = FastAPI(title="Search Engine")
 
     # Create SearchEngine instance
     search_engine = SearchEngine()
-    search_engine.crawl_and_index("https://fastapi.tiangolo.com/", 10)
 
     # Setup Jinja2 templates
     templates = Jinja2Templates(directory="search-engine/templates")
@@ -41,6 +44,9 @@ def create_app():
     # Add SearchEngine and templates to app state
     app.state.search_engine = search_engine
     app.state.templates = templates
+
+    # Crawl and index initial data
+    search_engine.crawl_and_index("https://en.wikipedia.org/wiki/Main_Page", 20)
 
     return app
 
