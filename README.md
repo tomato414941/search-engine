@@ -55,6 +55,22 @@ uvicorn search-engine.main:app --reload
 - Search functionality based on the created index
 - Web interface for easy searching
 - API endpoints for crawling and searching
+- Basic snippet generation for search results
+- Display of title, URL, snippet, and last crawled date in search results
+
+
+## Future Plans
+
+- Implement respect for robots.txt files in the crawler
+- Add support for different content types (e.g., PDFs)
+- Enhance the indexing process with text preprocessing (stemming or lemmatization)
+- Implement a more sophisticated ranking algorithm
+- Add support for phrase searches and boolean operators
+- Implement pagination for search results
+- Develop a more advanced snippet generation algorithm
+- Add data persistence to store crawled pages and index
+
+We welcome contributions and suggestions for additional features!
 
 ## Contributing
 
