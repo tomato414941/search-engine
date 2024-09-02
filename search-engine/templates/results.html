@@ -11,8 +11,11 @@
         input[type="text"] { width: 70%; padding: 10px; }
         input[type="submit"] { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
         .result { margin-bottom: 20px; }
-        .result a { color: #1a0dab; text-decoration: none; font-size: 18px; }
-        .result a:hover { text-decoration: underline; }
+        .result .title { color: #1a0dab; text-decoration: none; font-size: 18px; }
+        .result .title:hover { text-decoration: underline; }
+        .result .url { color: #006621; font-size: 14px; }
+        .result .snippet { color: #545454; font-size: 14px; }
+        .result .last-crawled { color: #808080; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -24,7 +27,10 @@
     {% if results %}
         {% for result in results %}
             <div class="result">
-                <a href="{{ result }}">{{ result }}</a>
+                <a href="{{ result.url }}" class="title">{{ result.title }}</a>
+                <div class="url">{{ result.url }}</div>
+                <div class="snippet">{{ result.snippet }}</div>
+                <div class="last-crawled">Last crawled: {{ result.last_crawled }}</div>
             </div>
         {% endfor %}
     {% else %}

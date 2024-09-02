@@ -25,6 +25,8 @@ class Crawler:
                 self.pages[url] = {
                     "title": soup.title.string if soup.title else "",
                     "content": soup.get_text(),
+                    "snippet": soup.p.text[:200] + "..." if soup.p else "",
+                    "last_crawled": response.headers.get("Date", ""),
                 }
 
                 print(f"Crawled {url}")
