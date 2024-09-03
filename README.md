@@ -66,7 +66,6 @@ uvicorn search-engine.main:app --reload
 
 ## Future Plans
 
-- Implement respect for robots.txt files in the crawler
 - Add support for different content types (e.g., PDFs)
 - Implement a more sophisticated ranking algorithm
 - Add support for phrase searches and boolean operators

@@ -10,7 +10,9 @@ from .searcher import Searcher
 
 class SearchEngine:
     def __init__(self):
-        self.crawler = Crawler()
+        self.crawler = Crawler(
+            use_robots_parser=True, default_delay=1, user_agent="search-engine"
+        )
         self.indexer = Indexer()
         self.searcher = None
 
@@ -46,7 +48,7 @@ def create_app():
     app.state.templates = templates
 
     # Crawl and index initial data
-    search_engine.crawl_and_index("https://en.wikipedia.org/wiki/Main_Page", 20)
+    search_engine.crawl_and_index("https://en.wikipedia.org/wiki/Main_Page", 10)
 
     return app
 
