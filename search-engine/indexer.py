@@ -1,3 +1,4 @@
+import math
 from collections import defaultdict
 
 from .preprocessor import preprocessor
@@ -5,17 +6,25 @@ from .preprocessor import preprocessor
 
 class Indexer:
     def __init__(self):
-        self.index = defaultdict(list)
+        self.index = defaultdict(dict)
+        self.idf = {}
         self.page_data = {}
+        self.document_count = 0
 
     def create_index(self, pages):
         print("Creating index...")
+        self.document_count = len(pages)
         for url, page_info in pages.items():
             if "content" in page_info:
                 words = preprocessor.preprocess(page_info["content"])
+                word_count = len(words)
+                word_freq = defaultdict(int)
                 for word in words:
-                    if url not in self.index[word]:
-                        self.index[word].append(url)
+                    word_freq[word] += 1
+
+                for word, freq in word_freq.items():
+                    self.index[word][url] = freq / word_count  # Term frequency
+
                 self.page_data[url] = {
                     "title": page_info.get("title", ""),
                     "snippet": page_info.get("snippet", ""),
@@ -24,5 +33,11 @@ class Indexer:
                 }
             else:
                 print(f"Skipping indexing for {url} (no content available)")
+
+        self.calculate_idf()
         print("Index created.")
-        return self.index, self.page_data
+        return self.index, self.idf, self.page_data
+
+    def calculate_idf(self):
+        for word in self.index:
+            self.idf[word] = math.log(self.document_count / len(self.index[word]))

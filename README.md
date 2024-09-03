@@ -56,63 +56,76 @@ uvicorn search-engine.main:app --reload
 
 - Web crawling with basic HTML parsing
 - Indexing of crawled pages with advanced text preprocessing
-- Search functionality based on the created index
+- Search functionality based on the created index with TF-IDF ranking
 - Web interface for easy searching
 - API endpoints for crawling and searching
 - Basic snippet generation for search results
-- Display of title, URL, snippet, and last crawled date in search results
+- Display of title, URL, snippet, last crawled date, and relevance score in search results
 - Text preprocessing including tokenization, stop word removal, and stemming
 
+## Recent Improvements
+
+- Implemented TF-IDF (Term Frequency-Inverse Document Frequency) ranking algorithm
+- Separated IDF values from term frequency data for cleaner code structure
+- Updated search results to include relevance scores
 
 ## Future Plans
 
 1. Search Functionality Improvements:
-   - Implement a more sophisticated ranking algorithm (e.g., TF-IDF, PageRank)
-   - Add support for phrase searches and boolean operators (AND, OR, NOT)
-   - Implement fuzzy matching for typo tolerance
-   - Add support for wildcards in search queries
-   - Implement semantic search capabilities
+- Implement a more sophisticated ranking algorithm (e.g., PageRank)
+- Update web interface to display relevance scores for each search result
+- Implement score normalization to avoid favoring longer documents
+- Refine handling of stop words in the ranking process
+- Add support for phrase searches and boolean operators (AND, OR, NOT)
+- Implement fuzzy matching for typo tolerance
+- Add support for wildcards in search queries
+- Implement semantic search capabilities
 
-2. Crawler Enhancements:
-   - Add support for different content types (e.g., PDFs, DOCs)
-   - Implement a distributed crawling system for better scalability
-   - Add support for sitemaps to improve crawling efficiency
-   - Implement adaptive crawling frequencies based on page update patterns
+1. Crawler Enhancements:
+- Add support for different content types (e.g., PDFs, DOCs)
+- Implement a distributed crawling system for better scalability
+- Add support for sitemaps to improve crawling efficiency
+- Implement adaptive crawling frequencies based on page update patterns
 
-3. User Interface and Experience:
-   - Implement pagination for search results
-   - Develop a more advanced snippet generation algorithm
-   - Add filters for search results (e.g., by date, content type)
-   - Implement an auto-suggest feature for search queries
-   - Create a more visually appealing and responsive web interface
+1. User Interface and Experience:
+- Implement pagination for search results
+- Develop a more advanced snippet generation algorithm
+- Add filters for search results (e.g., by date, content type)
+- Implement an auto-suggest feature for search queries
+- Create a more visually appealing and responsive web interface
 
-4. Data Management and Persistence:
-   - Add data persistence to store crawled pages and index
-   - Implement a caching system for frequently accessed pages or search results
-   - Develop a system for incremental updates to the index
+1. Data Management and Persistence:
+- Add data persistence to store crawled pages and index
+- Implement a caching system for frequently accessed pages or search results
+- Develop a system for incremental updates to the index
 
-5. Performance Optimization:
-   - Optimize the indexing process for faster updates
-   - Implement query result caching
-   - Optimize memory usage for large-scale indexing
+1. Performance Optimization:
+- Optimize the indexing process for faster updates
+- Implement query result caching
+- Optimize memory usage for large-scale indexing
 
-6. Analytics and Monitoring:
-   - Implement logging and monitoring for crawler and search performance
-   - Add analytics for popular search terms and user behavior
+1. Analytics and Monitoring:
+- Implement logging for performance tracking and debugging
+- Add analytics for popular search terms and user behavior
 
-7. Advanced Features:
-   - Implement image search capabilities
-   - Add support for multiple languages
-   - Develop a simple recommendation system based on search history
+1. Testing and Quality Assurance:
+- Implement unit tests for Indexer and Searcher classes
+- Develop integration tests for the entire search engine pipeline
+- Implement automated testing for web crawling and indexing processes
 
-8. API and Integration:
-   - Expand the API to allow for more customized searches
-   - Develop plugins for popular platforms to integrate your search engine
+1. Advanced Features:
+- Implement image search capabilities
+- Add support for multiple languages
+- Develop a simple recommendation system based on search history
 
-9. Security and Privacy:
-   - Implement secure searching (HTTPS)
-   - Add user authentication for personalized results
-   - Develop privacy controls for indexed content
+1. API and Integration:
+- Expand the API to allow for more customized searches
+- Develop plugins for popular platforms to integrate your search engine
+
+1.  Security and Privacy:
+- Implement secure searching (HTTPS)
+- Add user authentication for personalized results
+- Develop privacy controls for indexed content
 
 We welcome contributions and suggestions for additional features!
 
