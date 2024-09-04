@@ -4,11 +4,13 @@ from urllib.parse import urljoin
 import requests
 from bs4 import BeautifulSoup
 
+from .database import Database
 from .robots_parser import RobotsParser
 
 
 class Crawler:
-    def __init__(self, use_robots_parser=True, default_delay=1, user_agent=""):
+    def __init__(self, db, use_robots_parser=True, default_delay=1, user_agent=""):
+        self.db = db
         self.pages = {}
         self.links = {}
         self.use_robots_parser = use_robots_parser
@@ -20,6 +22,7 @@ class Crawler:
         print(f"Crawling {start_url}...")
         self._crawl_recursive(start_url, max_pages)
         print(f"Crawled {len(self.pages)} pages.")
+        self.db.save_links(self.links)
         return self.pages, self.links
 
     def _crawl_recursive(self, url, max_pages):
@@ -61,6 +64,14 @@ class Crawler:
                     "last_crawled": response.headers.get("Date", ""),
                     "robots_info": robots_info,
                 }
+
+                self.db.save_page(
+                    url,
+                    self.pages[url]["title"],
+                    self.pages[url]["content"],
+                    self.pages[url]["snippet"],
+                    self.pages[url]["last_crawled"],
+                )
 
                 print(f"Crawled {url}")
 

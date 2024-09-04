@@ -1,7 +1,11 @@
 import numpy as np
 
+from .database import Database
 
-def calculate_pagerank(links, damping_factor=0.85, num_iterations=100, tolerance=1e-8):
+
+def calculate_pagerank(
+    links, db, damping_factor=0.85, num_iterations=100, tolerance=1e-8
+):
     num_pages = len(links)
     ranks = np.ones(num_pages) / num_pages
 
@@ -26,4 +30,7 @@ def calculate_pagerank(links, damping_factor=0.85, num_iterations=100, tolerance
         if np.abs(ranks - prev_ranks).sum() < tolerance:
             break
 
-    return dict(zip(links.keys(), ranks))
+    pagerank_scores = dict(zip(links.keys(), ranks))
+    db.save_pagerank(pagerank_scores)
+
+    return pagerank_scores

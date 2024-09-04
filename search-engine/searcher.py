@@ -4,10 +4,11 @@ from .preprocessor import preprocessor
 
 
 class Searcher:
-    def __init__(self, index, idf, page_data):
+    def __init__(self, index, idf, page_data, pagerank):
         self.index = index
         self.idf = idf
         self.page_data = page_data
+        self.pagerank = pagerank
 
     def search(self, query):
         processed_query = preprocessor.preprocess(query)
@@ -23,7 +24,7 @@ class Searcher:
 
         # Combine TF-IDF score with PageRank
         for url in scores:
-            scores[url] = 0.5 * scores[url] + 0.5 * self.page_data[url]["pagerank"]
+            scores[url] = 0.5 * scores[url] + 0.5 * self.pagerank.get(url, 0)
 
         ranked_results = sorted(scores.items(), key=lambda x: x[1], reverse=True)
 
@@ -36,7 +37,7 @@ class Searcher:
                     "snippet": self.page_data[url]["snippet"],
                     "last_crawled": self.page_data[url]["last_crawled"],
                     "score": score,
-                    "pagerank": self.page_data[url]["pagerank"],
+                    "pagerank": self.pagerank.get(url, 0),
                 }
             )
 

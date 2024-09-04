@@ -1,12 +1,14 @@
 import math
 from collections import defaultdict
 
+from .database import Database
 from .pagerank import calculate_pagerank
 from .preprocessor import preprocessor
 
 
 class Indexer:
-    def __init__(self):
+    def __init__(self, db):
+        self.db = db
         self.index = defaultdict(dict)
         self.idf = {}
         self.page_data = {}
@@ -17,7 +19,7 @@ class Indexer:
         print("Creating index...")
         self.document_count = len(pages)
 
-        self.pagerank_scores = calculate_pagerank(links)
+        self.pagerank_scores = calculate_pagerank(links, self.db)
 
         for url, page_info in pages.items():
             if "content" in page_info:
@@ -42,6 +44,9 @@ class Indexer:
 
         self.calculate_idf()
         print("Index created.")
+
+        self.db.save_index_data(self.index)
+        self.db.save_idf_data(self.idf)
         return self.index, self.idf, self.page_data
 
     def calculate_idf(self):

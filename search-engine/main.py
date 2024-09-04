@@ -3,23 +3,40 @@ from fastapi.templating import Jinja2Templates
 
 from . import api, web
 from .crawler import Crawler
+from .database import Database
 from .download_nltk_data import download_nltk_data
 from .indexer import Indexer
+from .pagerank import calculate_pagerank
 from .searcher import Searcher
 
 
 class SearchEngine:
     def __init__(self):
+        self.db = Database()
         self.crawler = Crawler(
-            use_robots_parser=True, default_delay=1, user_agent="search-engine"
+            self.db, use_robots_parser=True, default_delay=1, user_agent="search-engine"
         )
-        self.indexer = Indexer()
+        self.indexer = Indexer(self.db)
         self.searcher = None
 
     def crawl_and_index(self, start_url, max_pages=10):
-        pages, links = self.crawler.crawl(start_url, max_pages)
-        index, idf, page_data = self.indexer.create_index(pages, links)
-        self.searcher = Searcher(index, idf, page_data)
+        pages = self.db.load_pages()
+        links = self.db.load_links()
+        if not pages or not links:
+            pages, links = self.crawler.crawl(start_url, max_pages)
+
+        index = self.db.load_index_data()
+        idf = self.db.load_idf_data()
+        if not index or not idf:
+            index, idf, page_data = self.indexer.create_index(pages, links)
+        else:
+            page_data = pages
+
+        pagerank = self.db.load_pagerank()
+        if not pagerank:
+            pagerank = calculate_pagerank(links, self.db)
+
+        self.searcher = Searcher(index, idf, page_data, pagerank)
 
     def search(self, query):
         if self.searcher is None:
