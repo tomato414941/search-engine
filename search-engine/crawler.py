@@ -10,6 +10,7 @@ from .robots_parser import RobotsParser
 class Crawler:
     def __init__(self, use_robots_parser=True, default_delay=1, user_agent=""):
         self.pages = {}
+        self.links = {}
         self.use_robots_parser = use_robots_parser
         self.default_delay = default_delay
         self.user_agent = user_agent
@@ -19,7 +20,7 @@ class Crawler:
         print(f"Crawling {start_url}...")
         self._crawl_recursive(start_url, max_pages)
         print(f"Crawled {len(self.pages)} pages.")
-        return self.pages
+        return self.pages, self.links
 
     def _crawl_recursive(self, url, max_pages):
         if len(self.pages) >= max_pages or url in self.pages:
@@ -63,9 +64,12 @@ class Crawler:
 
                 print(f"Crawled {url}")
 
+                self.links[url] = []
                 for link in soup.find_all("a"):
                     next_url = urljoin(url, link.get("href"))
-                    self._crawl_recursive(next_url, max_pages)
+                    if next_url.startswith(("http://", "https://")):
+                        self.links[url].append(next_url)
+                        self._crawl_recursive(next_url, max_pages)
             else:
                 print(f"Failed to crawl {url}: HTTP {response.status_code}")
                 self.pages[url] = {

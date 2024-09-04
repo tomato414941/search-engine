@@ -1,6 +1,7 @@
 import math
 from collections import defaultdict
 
+from .pagerank import calculate_pagerank
 from .preprocessor import preprocessor
 
 
@@ -10,10 +11,14 @@ class Indexer:
         self.idf = {}
         self.page_data = {}
         self.document_count = 0
+        self.pagerank_scores = {}
 
-    def create_index(self, pages):
+    def create_index(self, pages, links):
         print("Creating index...")
         self.document_count = len(pages)
+
+        self.pagerank_scores = calculate_pagerank(links)
+
         for url, page_info in pages.items():
             if "content" in page_info:
                 words = preprocessor.preprocess(page_info["content"])
@@ -30,6 +35,7 @@ class Indexer:
                     "snippet": page_info.get("snippet", ""),
                     "last_crawled": page_info.get("last_crawled", ""),
                     "robots_info": page_info.get("robots_info", {}),
+                    "pagerank": self.pagerank_scores.get(url, 0),
                 }
             else:
                 print(f"Skipping indexing for {url} (no content available)")

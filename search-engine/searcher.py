@@ -21,6 +21,10 @@ class Searcher:
                 for url, tf in self.index[word].items():
                     scores[url] += tf * idf
 
+        # Combine TF-IDF score with PageRank
+        for url in scores:
+            scores[url] = 0.5 * scores[url] + 0.5 * self.page_data[url]["pagerank"]
+
         ranked_results = sorted(scores.items(), key=lambda x: x[1], reverse=True)
 
         results = []
@@ -32,6 +36,7 @@ class Searcher:
                     "snippet": self.page_data[url]["snippet"],
                     "last_crawled": self.page_data[url]["last_crawled"],
                     "score": score,
+                    "pagerank": self.page_data[url]["pagerank"],
                 }
             )
 

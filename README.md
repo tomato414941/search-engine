@@ -66,13 +66,14 @@ uvicorn search-engine.main:app --reload
 ## Recent Improvements
 
 - Implemented TF-IDF (Term Frequency-Inverse Document Frequency) ranking algorithm
+- Implemented PageRank algorithm for improved search result ranking
 - Separated IDF values from term frequency data for cleaner code structure
-- Updated search results to include relevance scores
+- Updated search results to include relevance scores combining TF-IDF and PageRank
+- Modified crawler to store link information between pages
 
 ## Future Plans
 
 1. Search Functionality Improvements:
-- Implement a more sophisticated ranking algorithm (e.g., PageRank)
 - Update web interface to display relevance scores for each search result
 - Implement score normalization to avoid favoring longer documents
 - Refine handling of stop words in the ranking process

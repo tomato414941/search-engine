@@ -2,5 +2,6 @@ beautifulsoup4==4.12.3
 fastapi==0.112.2
 Jinja2==3.1.4
 nltk==3.9.1
+numpy==2.1.1
 requests==2.32.3
 uvicorn==0.30.6

@@ -17,8 +17,8 @@ class SearchEngine:
         self.searcher = None
 
     def crawl_and_index(self, start_url, max_pages=10):
-        pages = self.crawler.crawl(start_url, max_pages)
-        index, idf, page_data = self.indexer.create_index(pages)
+        pages, links = self.crawler.crawl(start_url, max_pages)
+        index, idf, page_data = self.indexer.create_index(pages, links)
         self.searcher = Searcher(index, idf, page_data)
 
     def search(self, query):
